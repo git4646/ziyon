@@ -47,14 +47,22 @@ def duanlian(lian):
 def huoqu_ydlj(headers,payload,c,yd):
     response = requests.request("OPTIONS", url + yd + "/read", headers=c)
     response = requests.request("post", url +yd+"/read", headers=headers, json=payload).json()
-    try:
-       biz=''.join(re.findall('__biz=(.+)&mid',response["result"]["url"]))
-       print("阅读链接获取成功", flush=True)
-       return biz,response["result"]["url"]
-    except:
+    if response["result"]["status"]==40:
+        print("文章还没有准备好",flush=True)
+    elif response["result"]["status"]==50:
         print("检测没通过",flush=True)
-        biz=""
-        return biz
+    elif response["result"]["status"]==60:
+        print("已经全部阅读完了",flush=True)
+    elif response["result"]["status"] ==70:
+        print("下一轮还未开启",flush=True) 
+    else:
+        try:
+           biz=''.join(re.findall('__biz=(.+)&mid',response["result"]["url"]))
+           print("阅读链接获取成功", flush=True)
+           return biz,response["result"]["url"]
+        except:
+            biz=""
+            return biz
 def huoqu_xx(c,payload,yd,mid):
     payload["code"]=mid
     response = requests.request("post", url+yd+"/info", headers=headers, json=payload).json()["result"]
