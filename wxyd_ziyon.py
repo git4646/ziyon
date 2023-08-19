@@ -5,10 +5,13 @@ http://mr1690711161293.uznmvev.cn/ox/index.html?mid=2B6TJGUDN 【星空阅读】
 
 当前脚本支持识别是否是验证文章，如遇到验证文章将返回短链接需手动用未黑号微信打开，此思路将无视黑号，黑号一样有收益
 
-Mr.陈 独家思路😁😁😁😁
+Mr.陈 独家思路😁😁😁😁  @wcnmsb123 有要求可以提但加不加再说😃
+
+新增按照时间来自动选择模式，新增账号详细信息但需在yd值内加上mid值不增也不影响，新增notify青龙推送
 
 变量 moshi= hh/xk/yb 支持三种模式但不支持同时运行
-变量 yd={"un":"xxx","token":"xxxx"}
+变量 yd={"un":"xxx","token":"xxxx","mid":"xxx"}
+如不需要不同时间段自动选择模式，需将下面yxfs值改成""
 """
 import time
 import random
@@ -16,46 +19,57 @@ import requests
 import json
 import os
 import re
+import datetime
 import configparser
+try:
+    from notify import send
+except:
+    pass
+yxfs=""  #如不需要不同时间段自动选择模式，需将此值删除
 url = "http://u.cocozx.cn/api/"
 headers = {
     'Accept': 'application/json, text/javascript, */*; q=0.01',
     'User-Agent': "Mozilla/5.0 (Linux; Android 10; EML-AL00 Build/HUAWEIEML-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4309 MMWEBSDK/20220805 Mobile Safari/537.36 MMWEBID/5583 MicroMessenger/8.0.27.2220(0x28001B3F) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64",
     'Content-Type': 'application/json; charset=UTF-8',
     'Host': 'u.cocozx.cn',
+
     'Connection': 'keep-alive',
 }
-yu={'Access-Control-Request-Method': 'POST'}
+yu={'Access-Control-Request-Method': 'POST',
+    'Content-Length':'113'
+}
 c={**yu, **headers}
 def duanlian(lian):
     headers={"content-type":"application/x-www-form-urlencoded; charset=UTF-8","User-Agent":"Mozilla/5.0 (Linux; Android 12; PEHM00 Build/SKQ1.210216.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4309 MMWEBSDK/20220805 Mobile Safari/537.36 MMWEBID/1109 MicroMessenger/8.0.27.2220(0x28001B3F) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64"}
     body={"url":lian}
     url=requests.post("https://aiu.pub/api/link",headers=headers,data=body).json()
     return url["data"]
-def wx_get(biz):
-    wx={
-    "user-agent":"Mozilla/5.0 (Linux; Android 12; M2012K11C Build/SKQ1.211006.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/111.0.5563.116 Mobile Safari/537.36 XWEB/5197 MMWEBSDK/20230504 MMWEBID/1942 MicroMessenger/8.0.37.2380(0x2800255B) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64",
-    "Cookie":"rewardsn=;wxtokenkey=777;wxuin=1943218360;devicetype=android-31;version=2800255b;lang=zh_CN;appmsg_token=1229_Oqcy%2B%2F03B3mXKoMtfDglh-94EM-40l43ceSYg1Hs1zYzW8BnAqBXG2cZ_9BHH5Jef7Ynlx_VnvvpT2mB;pass_ticket=5mcaQMujUY4IQu1/52gJhpUQ7kEn0X8ZzLh7nSlEyQ0RK8oDQf1xOr1xknFGATye;wap_sid2=CLjRzJ4HErYBeV9IRHNhMGV4WDlheWtjcTQxNGczRWZrR3F2V2NxWVo3bXFxeU0xNEFOUWt4Q0I0cFVXT1Q1cGNCRnM3d3JEYkEyT3VKZjRUYWhYSkVEa0JkRlpYMlV5cFZJM0NBVlNodW5sbnJhckN6UWNpSW9mVzBrQUJ1MDJOY0dXbDZIN2phQzlTbFBzWWNtODBvN3MtWE9Wb1poRGgtX2xNRU9XMGtsNEhNMG5ENzZIMEhBcWhJQUFBfn4w8YWupgY4DUAB"
-}
-    url=requests.get(biz,headers=wx)
-    return
 def huoqu_ydlj(headers,payload,c,yd):
     response = requests.request("OPTIONS", url + yd + "/read", headers=c)
     response = requests.request("post", url +yd+"/read", headers=headers, json=payload).json()
     try:
        biz=''.join(re.findall('__biz=(.+)&mid',response["result"]["url"]))
-       print(response, flush=True)
+       print("阅读链接获取成功", flush=True)
        return biz,response["result"]["url"]
     except:
         print("检测没通过",flush=True)
         biz=""
         return biz
+def huoqu_xx(c,payload,yd,mid):
+    payload["code"]=mid
+    response = requests.request("post", url+yd+"/info", headers=headers, json=payload).json()["result"]
+   # print(response)
+    print("""[---------账户名%s-----------]\n[---------今日阅读次数%s -----------]\n[---------当前鱼儿%s -----------]\n[---------累计阅读次数%s----------–]"""%(str(response["uid"]),str(response["dayCount"]),str(response["moneyCurrent"]),str(response["doneWx"])),flush=True)
+    del payload["code"]
+    del c["Content-Length"]
+    return
 def lingqu_ydjl(headers,payload,c,yd):
     time.sleep(random.randint(6, 8))
     response = requests.request("OPTIONS", url + yd + "/submit", headers=c)
     response = requests.request("post", url +yd+ "/submit", headers=headers, json=payload).json()
     #print(response, flush=True)
     cs = response["result"]["progress"]
+    print("阅读成功,当前剩余次数%s"%str(cs), flush=True)
     return cs
 
 def tx(headers,payload,c,yd,un,token):
@@ -73,11 +87,11 @@ def tx(headers,payload,c,yd,un,token):
     response = requests.request("OPTIONS", url + yd +tx_moshi, headers=c)
     response = requests.request("post", url +yd+tx_moshi, headers=headers, json=payload).json()
     print(response)
-    return 
+    return
 def xinxi(headers,payload,c,yd):
     response = requests.request("OPTIONS", url +yd+"/info", headers=c)
     response = requests.request("post", url+yd+"/info", headers=headers, json=payload).json()
-    print(response)
+    print("当前鱼儿:%s"%str(response))
     money=int((response["result"]["moneyCurrent"]))
     print(money)
     if 3000<money<4999:
@@ -89,22 +103,49 @@ def xinxi(headers,payload,c,yd):
     elif money>=50000:
         money="50000"
     return money
-def zsyx(moshi,shuju):
-    if moshi=="hh":
+def sj():
+    current_time = datetime.datetime.now().time()
+    if current_time >= datetime.time(7) and current_time < datetime.time(11):
         yd="user"
-    elif moshi=="xk":
-        yd = "ox"
-    elif moshi=="yb":
-        yd = "coin"
-    print("---------------开始运行模式花花----------------------" if yd=="user" else "---------------开始运行模式元宝----------------------" if yd=="coin" else "---------------开始运行模式星空阅读----------------------" )
+    elif current_time >= datetime.time(11) and current_time < datetime.time(17):
+        yd="ox"
+    elif current_time >= datetime.time(17) and current_time < datetime.time(22):
+        yd="coin"
+    return yd
+# 调用函数
+def gg():
+    url = requests.get('https://netcut.cn/p/fe616ac873f548ac')
+    gg = ''.join(re.findall(r'"note_content":"(.*?)"',url.text)).replace("\\n", "\n")
+    print(gg)
+    return gg
+def zsyx(yxfs,moshi,shuju):
+    if yxfs=="zidong":
+      print("当前为自动选择模式",flush=True)
+      yd=sj()
+    else:
+      if moshi=="hh":
+         yd="user"
+      elif moshi=="xk":
+         yd = "ox"
+      elif moshi=="yb":
+         yd = "coin"
     cishu = json.loads(shuju)
-    print(cishu)
+    try:
+        mid=cishu["mid"]
+    except:
+        print("mid不存在将不读取账号详细信息",flush=True)
     un = cishu["un"]
     token = cishu["token"]
     payload = {"un": un,
                "token": token,
                "pageSize": "20"
                }
+    try:
+        huoqu_xx(c,payload,yd,mid)
+    except:
+        pass
+    time.sleep(10)
+    print("---------------开始运行模式花花-----------------" if yd=="user" else "---------------开始运行模式元宝----------------" if yd=="coin" else "---------------开始运行模式星空阅读----------------" )
     while True:
         biz=huoqu_ydlj(headers,payload,c,yd)
         time.sleep(3)
@@ -120,13 +161,20 @@ def zsyx(moshi,shuju):
             except:
                 break
         else:
+            print("--------------------")
             print("遇到检测文章",flush=True)
             time.sleep(1)
-            print(duanlian(biz[1]))
+            msg=duanlian(biz[1])
+            try:
+               send("检测文章链接",msg)
+               print(msg)
+            except:
+               print(msg)
             time.sleep(2)
             print("请用未黑号微信打开上面链接,60s后将继续运行",flush=True)
             time.sleep(60)
             print("60s到了",flush=True)
+            print("--------------------")
             lingqu_ydjl(headers,payload,c,yd)
             continue
     try:
@@ -136,8 +184,7 @@ def zsyx(moshi,shuju):
         print("提现失败",flush=True)
 cishu=os.getenv('yd').split('&')
 for i in range(len(cishu)):
+    print(gg())
     print("请确定好前几篇已经手动阅读,10s后将运行程序", flush=True)
-    time.sleep(10)
-    cishu=os.getenv('yd').split('&')
     moshi=os.getenv('moshi').split('&')
-    zsyx(moshi[0],cishu[i])
+    zsyx(yxfs,moshi[0],cishu[i])
