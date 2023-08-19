@@ -35,9 +35,7 @@ headers = {
 
     'Connection': 'keep-alive',
 }
-yu={'Access-Control-Request-Method': 'POST',
-    'Content-Length':'113'
-}
+yu={'Access-Control-Request-Method': 'POST',}
 c={**yu, **headers}
 def duanlian(lian):
     headers={"content-type":"application/x-www-form-urlencoded; charset=UTF-8","User-Agent":"Mozilla/5.0 (Linux; Android 12; PEHM00 Build/SKQ1.210216.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4309 MMWEBSDK/20220805 Mobile Safari/537.36 MMWEBID/1109 MicroMessenger/8.0.27.2220(0x28001B3F) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64"}
@@ -47,29 +45,40 @@ def duanlian(lian):
 def huoqu_ydlj(headers,payload,c,yd):
     response = requests.request("OPTIONS", url + yd + "/read", headers=c)
     response = requests.request("post", url +yd+"/read", headers=headers, json=payload).json()
-    if response["result"]["status"]==40:
-        print("文章还没有准备好",flush=True)
-    elif response["result"]["status"]==50:
-        print("检测没通过",flush=True)
-    elif response["result"]["status"]==60:
-        print("已经全部阅读完了",flush=True)
-    elif response["result"]["status"] ==70:
-        print("下一轮还未开启",flush=True) 
-    else:
-        try:
-           biz=''.join(re.findall('__biz=(.+)&mid',response["result"]["url"]))
-           print("阅读链接获取成功", flush=True)
-           return biz,response["result"]["url"]
-        except:
+    try:
+        if response["result"]["status"]==30:
             biz=""
+            print("重新运行尝试一下",flush=True)
             return biz
+        elif response["result"]["status"]==40:
+            biz=""
+            print("文章还没有准备好",flush=True)
+            return biz
+        elif response["result"]["status"]==50:
+            biz=""
+            print("阅读失效",flush=True)
+            return biz
+        elif response["result"]["status"]==60:
+            biz=""
+            print("已经全部阅读完了",flush=True)
+            return biz
+        elif response["result"]["status"] ==70:
+            biz=""
+            print("下一轮还未开启",flush=True)
+            return biz
+        elif response["result"]["status"] ==10:
+            biz=''.join(re.findall('__biz=(.+)&mid',response["result"]["url"]))
+            print("阅读链接获取成功", flush=True)
+            return biz,response["result"]["url"]
+    except:
+        pass
 def huoqu_xx(c,payload,yd,mid):
-    payload["code"]=mid
+    if yd!="user":
+        payload["code"]=mid
     response = requests.request("post", url+yd+"/info", headers=headers, json=payload).json()["result"]
    # print(response)
     print("""[---------账户名%s-----------]\n[---------今日阅读次数%s -----------]\n[---------当前鱼儿%s -----------]\n[---------累计阅读次数%s----------–]"""%(str(response["uid"]),str(response["dayCount"]),str(response["moneyCurrent"]),str(response["doneWx"])),flush=True)
     del payload["code"]
-    del c["Content-Length"]
     return
 def lingqu_ydjl(headers,payload,c,yd):
     time.sleep(random.randint(6, 8))
@@ -113,18 +122,18 @@ def xinxi(headers,payload,c,yd):
     return money
 def sj():
     current_time = datetime.datetime.now().time()
-    if current_time >= datetime.time(7) and current_time < datetime.time(11):
+    if current_time >= datetime.time(7) and current_time < datetime.time(10):
         yd="user"
     elif current_time >= datetime.time(11) and current_time < datetime.time(17):
         yd="ox"
-    elif current_time >= datetime.time(17) and current_time < datetime.time(22):
+    elif current_time >= datetime.time(18) and current_time < datetime.time(22):
         yd="coin"
     return yd
 # 调用函数
 def gg():
     url = requests.get('https://netcut.cn/p/fe616ac873f548ac')
     gg = ''.join(re.findall(r'"note_content":"(.*?)"',url.text)).replace("\\n", "\n")
-    print(gg)
+    print("当前版本2.0")
     return gg
 def zsyx(yxfs,moshi,shuju):
     if yxfs=="zidong":
@@ -141,6 +150,7 @@ def zsyx(yxfs,moshi,shuju):
     try:
         mid=cishu["mid"]
     except:
+        mid=""
         print("mid不存在将不读取账号详细信息",flush=True)
     un = cishu["un"]
     token = cishu["token"]
@@ -148,12 +158,12 @@ def zsyx(yxfs,moshi,shuju):
                "token": token,
                "pageSize": "20"
                }
-    try:
+    if mid!="":
         huoqu_xx(c,payload,yd,mid)
-    except:
-        pass
+    else:
+        print("当前运行账号:%s"%cishu)
     time.sleep(10)
-    print("---------------开始运行模式花花-----------------" if yd=="user" else "---------------开始运行模式元宝----------------" if yd=="coin" else "---------------开始运行模式星空阅读----------------" )
+    print("---------------开始运行模式花花-----------------" if yd=="user" else "---------------开始运行模式元宝----------------" if yd=="coin" else "---------------开始运行模式星空阅读----------------")
     while True:
         biz=huoqu_ydlj(headers,payload,c,yd)
         time.sleep(3)
@@ -175,7 +185,6 @@ def zsyx(yxfs,moshi,shuju):
             msg=duanlian(biz[1])
             try:
                send("检测文章链接",msg)
-               print(msg)
             except:
                print(msg)
             time.sleep(2)
