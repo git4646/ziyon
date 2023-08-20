@@ -23,7 +23,6 @@ import os
 import re
 import datetime
 import configparser
-import wxpush
 try:
     from notify import send
 except:
@@ -215,7 +214,6 @@ def zsyx(moshi,shuju):
             msg=duanlian(biz[1])
             try:
                print("已将链接通过青龙推送发出",flush=True)
-               wxpush.pushplus(msg)
                send("检测文章链接",msg)
             except:
                print(msg)
