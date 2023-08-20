@@ -82,7 +82,7 @@ def huoqu_xx(c,payload,yd,mid):
     print("""[---------账户名:%s-----------]\n[---------今日阅读次数:%s -----------]\n[---------当前鱼儿:%s -----------]\n[---------累计阅读次数:%s----------–]"""%(str(response["uid"]),str(response["dayCount"]),str(response["moneyCurrent"]),str(response["doneWx"])),flush=True)
     if yd!="user":
        del payload["code"]
-    return
+    return response["uid"]
 def lingqu_ydjl(headers,payload,c,yd):
     time.sleep(random.randint(6, 8))
     response = requests.request("OPTIONS", url + yd + "/submit", headers=c)
@@ -135,10 +135,17 @@ def sj():
 def gg():
     url = requests.get('https://netcut.cn/p/fe616ac873f548ac')
     gg = ''.join(re.findall(r'"note_content":"(.*?)"',url.text)).replace("\\n", "\n").replace('\\/', '/')
-    print("当前版本3.2")
+    print("当前版本3.4")
     return gg
 def hh_sj(mid,un,token):
-    headers={"content-type":"application/x-www-form-urlencoded; charset=UTF-8","User-Agent":"Mozilla/5.0 (Linux; Android 12; PEHM00 Build/SKQ1.210216.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4309 MMWEBSDK/20220805 Mobile Safari/537.36 MMWEBID/1109 MicroMessenger/8.0.27.2220(0x28001B3F) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64"}
+    headers = {
+    'Accept': 'application/json, text/javascript, */*; q=0.01',
+    'User-Agent': "Mozilla/5.0 (Linux; Android 10; EML-AL00 Build/HUAWEIEML-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4309 MMWEBSDK/20220805 Mobile Safari/537.36 MMWEBID/5583 MicroMessenger/8.0.27.2220(0x28001B3F) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64",
+    'Content-Type': 'application/json; charset=UTF-8',
+    'Host': 'u.cocozx.cn',
+    'Content-Length':'112',
+    'Connection': 'keep-alive',
+}
     body={
       "mid":mid,
       "un":un,
@@ -147,7 +154,7 @@ def hh_sj(mid,un,token):
 }
     try:
         response = requests.request("post", url+"user/psmoneyc", headers=headers, json=body).json()["result"]
-        print("花花:感谢下级送来的%s"%response)
+        print("花花:感谢下级送来的%s"%response,flush=True)
     except:
         pass
     return
@@ -177,7 +184,7 @@ def zsyx(moshi,shuju):
                }
     print("[----------开始运行模式花花----------------]" if yd=="user" else "[-----------开始运行模式元宝----------------]" if yd=="coin" else "[-----------开始运行模式星空----------------]")
     if yd=="user":
-        huoqu_xx(c,payload,yd,mid)
+        mid=huoqu_xx(c,payload,yd,mid)
     elif mid!="":
         huoqu_xx(c,payload,yd,mid)
     else:
