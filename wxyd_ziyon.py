@@ -23,6 +23,7 @@ import os
 import re
 import datetime
 import configparser
+import wxpush
 try:
     from notify import send
 except:
@@ -134,8 +135,22 @@ def sj():
 def gg():
     url = requests.get('https://netcut.cn/p/fe616ac873f548ac')
     gg = ''.join(re.findall(r'"note_content":"(.*?)"',url.text)).replace("\\n", "\n").replace('\\/', '/')
-    print("当前版本3.0")
+    print("当前版本3.2")
     return gg
+def hh_sj(mid,un,token):
+    headers={"content-type":"application/x-www-form-urlencoded; charset=UTF-8","User-Agent":"Mozilla/5.0 (Linux; Android 12; PEHM00 Build/SKQ1.210216.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4309 MMWEBSDK/20220805 Mobile Safari/537.36 MMWEBID/1109 MicroMessenger/8.0.27.2220(0x28001B3F) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64"}
+    body={
+      "mid":mid,
+      "un":un,
+      "token": token,
+      "pageSize": 20
+}
+    try:
+        response = requests.request("post", url+"user/psmoneyc", headers=headers, json=body).json()["result"]
+        print("花花:感谢下级送来的%s"%response)
+    except:
+        pass
+    return
 def zsyx(moshi,shuju):
     if moshi=="zidong":
       print("当前为自动选择模式",flush=True)
@@ -168,6 +183,10 @@ def zsyx(moshi,shuju):
     else:
         print("当前运行账号:%s"%cishu)
     time.sleep(10)
+    if yd=="user":
+        if mid!="":
+            hh_sj(mid, un, token)
+    time.sleep(2)
     while True:
         biz=huoqu_ydlj(headers,payload,c,yd)
         time.sleep(3)
@@ -189,6 +208,7 @@ def zsyx(moshi,shuju):
             msg=duanlian(biz[1])
             try:
                print("已将链接通过青龙推送发出",flush=True)
+               wxpush.pushplus(msg)
                send("检测文章链接",msg)
             except:
                print(msg)
