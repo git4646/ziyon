@@ -9,7 +9,7 @@ Mr.陈 独家思路😁😁😁😁  @wcnmsb123 有要求可以提但加不加�
 
 新增按照时间来自动选择模式，新增账号详细信息但需在yd值内加上mid值不增也不影响，新增notify青龙推送
 
-变量 yd={"un":"xxx","token":"xxxx","mid":"xxx"}  如需花花自动收集mid值必须
+变量 yd={"un":"xxx","token":"xxxx","mid":"xxx"}  
 
 变量 moshi 支持三种模式 例:只运行hh 或运行hh&yb&xk 或zidong
 
