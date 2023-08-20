@@ -133,7 +133,7 @@ def sj():
 # 调用函数
 def gg():
     url = requests.get('https://netcut.cn/p/fe616ac873f548ac')
-    gg = ''.join(re.findall(r'"note_content":"(.*?)"',url.text)).replace("\\n", "\n")
+    gg = ''.join(re.findall(r'"note_content":"(.*?)"',url.text)).replace("\\n", "\n").replace('\\/', '/')
     print("当前版本3.0")
     return gg
 def zsyx(moshi,shuju):
