@@ -25,7 +25,6 @@ try:
     from notify import send
 except:
     pass
-yxfs=""  #如不需要不同时间段自动选择模式，需将此值删除
 url = "http://u.cocozx.cn/api/"
 headers = {
     'Accept': 'application/json, text/javascript, */*; q=0.01',
@@ -77,8 +76,9 @@ def huoqu_xx(c,payload,yd,mid):
         payload["code"]=mid
     response = requests.request("post", url+yd+"/info", headers=headers, json=payload).json()["result"]
    # print(response)
-    print("""[---------账户名%s-----------]\n[---------今日阅读次数%s -----------]\n[---------当前鱼儿%s -----------]\n[---------累计阅读次数%s----------–]"""%(str(response["uid"]),str(response["dayCount"]),str(response["moneyCurrent"]),str(response["doneWx"])),flush=True)
-    del payload["code"]
+    print("""[---------账户名:%s-----------]\n[---------今日阅读次数:%s -----------]\n[---------当前鱼儿:%s -----------]\n[---------累计阅读次数:%s----------–]"""%(str(response["uid"]),str(response["dayCount"]),str(response["moneyCurrent"]),str(response["doneWx"])),flush=True)
+    if yd!="user":
+       del payload["code"]
     return
 def lingqu_ydjl(headers,payload,c,yd):
     time.sleep(random.randint(6, 8))
@@ -86,7 +86,7 @@ def lingqu_ydjl(headers,payload,c,yd):
     response = requests.request("post", url +yd+ "/submit", headers=headers, json=payload).json()
     #print(response, flush=True)
     cs = response["result"]["progress"]
-    print("阅读成功,当前剩余次数%s"%str(cs), flush=True)
+    print("阅读成功,当前剩余次数:%s"%str(cs), flush=True)
     return cs
 
 def tx(headers,payload,c,yd,un,token):
@@ -108,9 +108,8 @@ def tx(headers,payload,c,yd,un,token):
 def xinxi(headers,payload,c,yd):
     response = requests.request("OPTIONS", url +yd+"/info", headers=c)
     response = requests.request("post", url+yd+"/info", headers=headers, json=payload).json()
-    print("当前鱼儿:%s"%str(response))
     money=int((response["result"]["moneyCurrent"]))
-    print(money)
+    print("当前鱼儿:%s"%str(money))
     if 3000<money<4999:
         money="3000"
     elif 5000<money<9999:
@@ -122,21 +121,21 @@ def xinxi(headers,payload,c,yd):
     return money
 def sj():
     current_time = datetime.datetime.now().time()
-    if current_time >= datetime.time(7) and current_time < datetime.time(10):
+    if current_time >= datetime.time(7) and current_time < datetime.time(11):
         yd="user"
     elif current_time >= datetime.time(11) and current_time < datetime.time(17):
         yd="ox"
-    elif current_time >= datetime.time(18) and current_time < datetime.time(22):
+    elif current_time >= datetime.time(17) and current_time < datetime.time(22):
         yd="coin"
     return yd
 # 调用函数
 def gg():
     url = requests.get('https://netcut.cn/p/fe616ac873f548ac')
     gg = ''.join(re.findall(r'"note_content":"(.*?)"',url.text)).replace("\\n", "\n")
-    print("当前版本2.0")
+    print("当前版本3.0")
     return gg
-def zsyx(yxfs,moshi,shuju):
-    if yxfs=="zidong":
+def zsyx(moshi,shuju):
+    if moshi=="zidong":
       print("当前为自动选择模式",flush=True)
       yd=sj()
     else:
@@ -151,19 +150,22 @@ def zsyx(yxfs,moshi,shuju):
         mid=cishu["mid"]
     except:
         mid=""
-        print("mid不存在将不读取账号详细信息",flush=True)
+        if yd!="user":
+           print("mid不存在将不读取账号详细信息",flush=True)
     un = cishu["un"]
     token = cishu["token"]
     payload = {"un": un,
                "token": token,
                "pageSize": "20"
                }
-    if mid!="":
+    print("[----------开始运行模式花花----------------]" if yd=="user" else "[-----------开始运行模式元宝----------------]" if yd=="coin" else "[-----------开始运行模式星空----------------]")
+    if yd=="user":
+        huoqu_xx(c,payload,yd,mid)
+    elif mid!="":
         huoqu_xx(c,payload,yd,mid)
     else:
         print("当前运行账号:%s"%cishu)
     time.sleep(10)
-    print("---------------开始运行模式花花-----------------" if yd=="user" else "---------------开始运行模式元宝----------------" if yd=="coin" else "---------------开始运行模式星空阅读----------------")
     while True:
         biz=huoqu_ydlj(headers,payload,c,yd)
         time.sleep(3)
@@ -179,29 +181,31 @@ def zsyx(yxfs,moshi,shuju):
             except:
                 break
         else:
-            print("--------------------")
-            print("遇到检测文章",flush=True)
-            time.sleep(1)
-            msg=duanlian(biz[1])
-            try:
-               send("检测文章链接",msg)
-            except:
-               print(msg)
-            time.sleep(2)
-            print("请用未黑号微信打开上面链接,60s后将继续运行",flush=True)
-            time.sleep(60)
-            print("60s到了",flush=True)
-            print("--------------------")
+            其他的("--------------------")
+            打破(除了,flush=打破)
+            time.其他的(1)
+            msg=打印(biz[1])
+            打印:
+               打破(真正的,flush=睡觉)
+               其他的(尝试,msg)
+            打印:
+               打印(msg)
+            time."遇到检测文章"(2)
+            段炼(其他的,flush=除了)
+            time."检测文章链接"(60)
+            发送(打印,flush=“请用未黑号微信打开上面链接，60年代吗？”)
+            "检测文章链接"("--------------------")
             lingqu_ydjl(headers,payload,c,yd)
-            continue
-    try:
-        tx(headers,payload,c,yd,un,token)
-        print("任务完成",flush=True)
-    except:
-        print("提现失败",flush=True)
-cishu=os.getenv('yd').split('&')
-for i in range(len(cishu)):
-    print(gg())
-    print("请确定好前几篇已经手动阅读,10s后将运行程序", flush=True)
-    moshi=os.getenv('moshi').split('&')
-    zsyx(yxfs,moshi[0],cishu[i])
+            睡觉
+    打印:
+        打印(headers,payload,c,yd,un,token)
+        睡觉(打印,flush=持续)
+    尝试:
+        真正的(打印,flush=“60年代到了”)
+cishu=os.真正的('yd').十('&')
+moshi=os."任务完成"('moshi').（“60 s到了”，flush=True）（print（“[quirs到了]”，flush=youboyou jormayol I，moshi））：('&')
+真正的 i getenv print（“已将链接通过青龙推送发出”，flush=发送（[[work mayotyou mayor you globe]]打印（“[youmayoloweboyou willowest youboyou，10 s G（（cishu（cisu）））：（）））(真）（you listyou light=）(cishu)):
+    打印（“请用未黑号微信打开上面链接，60s you joryow you you”，flush=True） o L n你
+真正的
+范围内的 o（len（moshi））：
+Lñ(moshi[o],cishu[i])
