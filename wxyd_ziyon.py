@@ -9,9 +9,11 @@ Mr.陈 独家思路😁😁😁😁  @wcnmsb123 有要求可以提但加不加�
 
 新增按照时间来自动选择模式，新增账号详细信息但需在yd值内加上mid值不增也不影响，新增notify青龙推送
 
-变量 moshi= hh/xk/yb 支持三种模式但不支持同时运行
 变量 yd={"un":"xxx","token":"xxxx","mid":"xxx"}
-如不需要不同时间段自动选择模式，需将下面yxfs值改成""
+
+变量 moshi 支持三种模式 例:只运行hh 或运行hh&yb&xk 或zidong
+
+zidong将在7-10点这个时间点运行花花 11-17点这个时间点上运行星空 18-22这个时间点运行元宝
 """
 import time
 import random
@@ -181,31 +183,31 @@ def zsyx(moshi,shuju):
             except:
                 break
         else:
-            其他的("--------------------")
-            打破(除了,flush=打破)
-            time.其他的(1)
-            msg=打印(biz[1])
-            打印:
-               打破(真正的,flush=睡觉)
-               其他的(尝试,msg)
-            打印:
-               打印(msg)
-            time."遇到检测文章"(2)
-            段炼(其他的,flush=除了)
-            time."检测文章链接"(60)
-            发送(打印,flush=“请用未黑号微信打开上面链接，60年代吗？”)
-            "检测文章链接"("--------------------")
+            print("--------------------")
+            print("遇到检测文章",flush=True)
+            time.sleep(1)
+            msg=duanlian(biz[1])
+            try:
+               print("已将链接通过青龙推送发出",flush=True)
+               send("检测文章链接",msg)
+            except:
+               print(msg)
+            time.sleep(2)
+            print("请用未黑号微信打开上面链接,60s后将继续运行",flush=True)
+            time.sleep(60)
+            print("60s到了",flush=True)
+            print("--------------------")
             lingqu_ydjl(headers,payload,c,yd)
-            睡觉
-    打印:
-        打印(headers,payload,c,yd,un,token)
-        睡觉(打印,flush=持续)
-    尝试:
-        真正的(打印,flush=“60年代到了”)
-cishu=os.真正的('yd').十('&')
-moshi=os."任务完成"('moshi').（“60 s到了”，flush=True）（print（“[quirs到了]”，flush=youboyou jormayol I，moshi））：('&')
-真正的 i getenv print（“已将链接通过青龙推送发出”，flush=发送（[[work mayotyou mayor you globe]]打印（“[youmayoloweboyou willowest youboyou，10 s G（（cishu（cisu）））：（）））(真）（you listyou light=）(cishu)):
-    打印（“请用未黑号微信打开上面链接，60s you joryow you you”，flush=True） o L n你
-真正的
-范围内的 o（len（moshi））：
-Lñ(moshi[o],cishu[i])
+            continue
+    try:
+        tx(headers,payload,c,yd,un,token)
+        print("任务完成",flush=True)
+    except:
+        print("提现失败",flush=True)
+cishu=os.getenv('yd').split('&')
+moshi=os.getenv('moshi').split('&')
+for i in range(len(cishu)):
+    for o in range(len(moshi)):
+        print(gg())
+        print("请确定好前几篇已经手动阅读,10s后将运行程序", flush=True)
+        zsyx(moshi[o],cishu[i])
