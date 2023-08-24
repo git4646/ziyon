@@ -7,12 +7,16 @@ http://mr1690711161293.uznmvev.cn/ox/index.html?mid=2B6TJGUDN 【星空阅读】
 
 Mr.陈 独家思路😁😁😁😁  @wcnmsb123 有要求可以提但加不加再说😃
 
-新增按照时间来自动选择模式，新增账号详细信息但需在yd值内加上mid值不增也不影响，新增notify青龙推送
-
-变量 yd={"un":"xxx","token":"xxxx","mid":"xxx"}  
+新增按照时间来自动选择模式，
+新增账号详细信息但需在yd值内加上mid值不增也不影响，
+新增notify青龙推送
+新增pushplus推送，并增加阅读检测回调
+如需使用 pushplus 功能需到https://www.pushplus.plus/login.html?backUrl=https://www.pushplus.plus/ 获取token并填写 push_token 变量名
+变量 yd={"un":"xxx","token":"xxxx","mid":"xxx"}  如需花花自动收集mid值必须
 
 变量 moshi 支持三种模式 例:只运行hh 或运行hh&yb&xk 或zidong
 
+变量 push_token 选填
 zidong将在7-10点这个时间点运行花花 11-17点这个时间点上运行星空 18-22这个时间点运行元宝
 """
 import time
@@ -33,7 +37,6 @@ headers = {
     'User-Agent': "Mozilla/5.0 (Linux; Android 10; EML-AL00 Build/HUAWEIEML-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4309 MMWEBSDK/20220805 Mobile Safari/537.36 MMWEBID/5583 MicroMessenger/8.0.27.2220(0x28001B3F) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64",
     'Content-Type': 'application/json; charset=UTF-8',
     'Host': 'u.cocozx.cn',
-
     'Connection': 'keep-alive',
 }
 yu={'Access-Control-Request-Method': 'POST',}
@@ -73,6 +76,31 @@ def huoqu_ydlj(headers,payload,c,yd):
             return biz,response["result"]["url"]
     except:
         pass
+
+def get_jq():
+    url = "https://request.worktile.com/api/requests/"
+    headers = {
+        'Cookie': 'sid=d481ab7207e0406cb04a1a922d8f95d3; sid=6c238d8fbec94acab1f42fcdd49f5f54',
+    }
+    response = requests.request("GET", url, headers=headers).json()["data"]
+    return response[0]["id"]
+def get_jieko(jk_url):
+    url=requests.get("https://request.worktile.com/api/requests/%s/inspects"%jk_url).json()["data"]
+    return len(url["inspects"])
+
+def pushplus(jk_url,push_token,msg):
+    headers = {
+        "Content-Type": "application/json"
+    }
+    body = {
+    "token":push_token,
+    "title":"微信文章检测",
+    "content":"""<a href="%s">点击验证跳转</a>\n\n
+    <a href="https://request.worktile.com/%s">点击完成验证跳转</a>"""%(msg,jk_url),
+    "template":"html"
+}
+    url = requests.post("http://www.pushplus.plus/send", headers=headers, json=body).json()
+    return url
 def huoqu_xx(c,payload,yd,mid):
     if yd!="user":
         payload["code"]=mid
@@ -104,6 +132,7 @@ def tx(headers,payload,c,yd,un,token):
     else:
         tx_moshi="/wdmoney"
     response = requests.request("OPTIONS", url + yd +tx_moshi, headers=c)
+    #headers['Content-Length']=106
     response = requests.request("post", url +yd+tx_moshi, headers=headers, json=payload).json()
     print(response)
     return
@@ -118,8 +147,10 @@ def xinxi(headers,payload,c,yd):
         money="5000"
     elif 10000<money<49999:
         money="10000"
-    elif money>=50000:
+    elif 50000<money<99999:
         money="50000"
+    elif money>=100000:
+        money="100000"
     return money
 def sj():
     current_time = datetime.datetime.now().time()
@@ -134,7 +165,7 @@ def sj():
 def gg():
     url = requests.get('https://netcut.cn/p/fe616ac873f548ac')
     gg = ''.join(re.findall(r'"note_content":"(.*?)"',url.text)).replace("\\n", "\n").replace('\\/', '/')
-    print("当前版本3.4")
+    print("当前版本4.0,靓仔自用版本")
     return gg
 def hh_sj(mid,un,token):
     headers = {
@@ -213,13 +244,31 @@ def zsyx(moshi,shuju):
             time.sleep(1)
             msg=duanlian(biz[1])
             try:
-               print("已将链接通过青龙推送发出",flush=True)
-               send("检测文章链接",msg)
+               if push_token[0]!="":
+                  jk_url=get_jq()
+                  dq_cishu=get_jieko(jk_url)
+                  print("已将链接通过pushplus推送发出", flush=True)
+                  pushplus(jk_url,push_token[0],msg)
+                  print(msg)
+               else:
+                   print("已将链接通过青龙推送发出",flush=True)
+                   send("检测文章链接",msg)
             except:
                print(msg)
             time.sleep(2)
             print("请用未黑号微信打开上面链接,60s后将继续运行",flush=True)
-            time.sleep(60)
+            #time.sleep(60)
+            try:
+                while True:
+                    xz_cishu=get_jieko(jk_url)
+                    if xz_cishu>dq_cishu:
+                        print("收到ok")
+                        break
+                    else:
+                        print("还未收到",flush=True)
+                        time.sleep(3)
+            except:
+                time.sleep(60)
             print("60s到了",flush=True)
             print("--------------------")
             lingqu_ydjl(headers,payload,c,yd)
@@ -231,6 +280,10 @@ def zsyx(moshi,shuju):
         print("提现失败",flush=True)
 cishu=os.getenv('yd').split('&')
 moshi=os.getenv('moshi').split('&')
+try:
+    push_token=os.getenv('push_token').split('&')
+except:
+    pass
 for i in range(len(cishu)):
     for o in range(len(moshi)):
         print(gg())
