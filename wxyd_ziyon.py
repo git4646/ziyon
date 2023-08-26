@@ -7,16 +7,12 @@ http://mr1690711161293.uznmvev.cn/ox/index.html?mid=2B6TJGUDN 【星空阅读】
 
 Mr.陈 独家思路😁😁😁😁  @wcnmsb123 有要求可以提但加不加再说😃
 
-新增按照时间来自动选择模式，
-新增账号详细信息但需在yd值内加上mid值不增也不影响，
-新增notify青龙推送
-新增pushplus推送，并增加阅读检测回调
-如需使用 pushplus 功能需到https://www.pushplus.plus/login.html?backUrl=https://www.pushplus.plus/ 获取token并填写 push_token 变量名
+新增按照时间来自动选择模式，新增账号详细信息但需在yd值内加上mid值不增也不影响，新增notify青龙推送，修复需重新运行
+
 变量 yd={"un":"xxx","token":"xxxx","mid":"xxx"}  如需花花自动收集mid值必须
 
 变量 moshi 支持三种模式 例:只运行hh 或运行hh&yb&xk 或zidong
 
-变量 push_token 选填
 zidong将在7-10点这个时间点运行花花 11-17点这个时间点上运行星空 18-22这个时间点运行元宝
 """
 import time
@@ -51,7 +47,7 @@ def huoqu_ydlj(headers,payload,c,yd):
     response = requests.request("post", url +yd+"/read", headers=headers, json=payload).json()
     try:
         if response["result"]["status"]==30:
-            biz=""
+            biz="重新运行"
             print("重新运行尝试一下",flush=True)
             return biz
         elif response["result"]["status"]==40:
@@ -165,7 +161,7 @@ def sj():
 def gg():
     url = requests.get('https://netcut.cn/p/fe616ac873f548ac')
     gg = ''.join(re.findall(r'"note_content":"(.*?)"',url.text)).replace("\\n", "\n").replace('\\/', '/')
-    print("当前版本4.0,靓仔自用版本")
+    print("当前版本4.2,靓仔自用版本")
     return gg
 def hh_sj(mid,un,token):
     headers = {
@@ -227,8 +223,10 @@ def zsyx(moshi,shuju):
     while True:
         biz=huoqu_ydlj(headers,payload,c,yd)
         time.sleep(3)
-        if biz=="":
-          break
+        if biz=="重新运行":
+           print("将重新运行当前程序")  
+        elif biz=="":
+            break
         elif biz[0]!="Mzg2Mzk3Mjk5NQ==":
             try:
                 result = lingqu_ydjl(headers,payload,c,yd)
