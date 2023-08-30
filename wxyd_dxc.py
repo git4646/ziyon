@@ -38,6 +38,9 @@ headers = {
 }
 yu={'Access-Control-Request-Method': 'POST',}
 c={**yu, **headers}
+def moshi_dayi(yd):
+    sn="花花:" if yd=="user" else "元宝:" if yd=="coin" else "星空:"
+    return sn
 def duanlian(lian):
     headers={"content-type":"application/x-www-form-urlencoded; charset=UTF-8","User-Agent":"Mozilla/5.0 (Linux; Android 12; PEHM00 Build/SKQ1.210216.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4309 MMWEBSDK/20220805 Mobile Safari/537.36 MMWEBID/1109 MicroMessenger/8.0.27.2220(0x28001B3F) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64"}
     body={"url":lian}
@@ -69,7 +72,7 @@ def huoqu_ydlj(headers,payload,c,yd):
             return biz
         elif response["result"]["status"] ==10:
             biz=''.join(re.findall('__biz=(.+)&mid',response["result"]["url"]))
-            print("花花:" if yd=="user" else "元宝:" if yd=="coin" else "星空:"+"阅读链接获取成功", flush=True)
+            print(moshi_dayi(yd),"阅读链接获取成功", flush=True)
             return biz,response["result"]["url"]
     except:
         pass
@@ -114,7 +117,7 @@ def lingqu_ydjl(headers,payload,c,yd):
     response = requests.request("post", url +yd+ "/submit", headers=headers, json=payload).json()
     #print(response, flush=True)
     cs = response["result"]["progress"]
-    print("阅读成功,当前剩余次数:%s"%str(cs), flush=True)
+    print(moshi_dayi(yd),"阅读成功,当前剩余次数:%s"%str(cs), flush=True)
     return cs
 
 def tx(headers,payload,c,yd,un,token):
@@ -138,7 +141,7 @@ def xinxi(headers,payload,c,yd):
     response = requests.request("OPTIONS", url +yd+"/info", headers=c)
     response = requests.request("post", url+yd+"/info", headers=headers, json=payload).json()
     money=int((response["result"]["moneyCurrent"]))
-    print("当前鱼儿:%s"%str(money))
+    print(moshi_dayi(yd),"当前鱼儿:%s"%str(money))
     if 3000<money<4999:
         money="3000"
     elif 5000<money<9999:
@@ -163,7 +166,7 @@ def sj():
 def gg():
     url = requests.get('https://netcut.cn/p/fe616ac873f548ac')
     gg = ''.join(re.findall(r'"note_content":"(.*?)"',url.text)).replace("\\n", "\n").replace('\\/', '/')
-    print("当前版本4.4,靓仔自用同时运行版本")
+    print("当前版本4.6,靓仔自用同时运行版本")
     return gg
 def hh_sj(mid,un,token):
     headers = {
@@ -249,7 +252,7 @@ def zsyx(moshi,shuju):
                   dq_cishu=get_jieko(jk_url)
                   print("已将链接通过pushplus推送发出", flush=True)
                   pushplus(jk_url,push_token[0],msg)
-                  print(msg)
+                  print(moshi_dayi(yd),msg)
                else:
                    print("已将链接通过青龙推送发出",flush=True)
                    send("检测文章链接",msg)
@@ -275,7 +278,7 @@ def zsyx(moshi,shuju):
             continue
     try:
         tx(headers,payload,c,yd,un,token)
-        print("任务完成",flush=True)
+        print(moshi_dayi(yd),"任务完成",flush=True)
     except:
         print("提现失败",flush=True)
 def my_function(i, o):
@@ -293,6 +296,7 @@ for i in range(len(cishu)):
     for o in range(len(moshi)):
         thread = threading.Thread(target=my_function, args=(i, o))
         threads.append(thread)
+        time.sleep(random.randint(1, 8))
         thread.start()
     for thread in threads:
         thread.join()
