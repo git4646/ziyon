@@ -56,19 +56,19 @@ def huoqu_ydlj(headers,payload,c,yd):
             return biz
         elif response["result"]["status"]==40:
             biz=""
-            print("文章还没有准备好",flush=True)
+            print(moshi_dayi(yd),"文章还没有准备好",flush=True)
             return biz
         elif response["result"]["status"]==50:
             biz=""
-            print("阅读失效",flush=True)
+            print(moshi_dayi(yd),"阅读失效",flush=True)
             return biz
         elif response["result"]["status"]==60:
             biz=""
-            print("已经全部阅读完了",flush=True)
+            print(moshi_dayi(yd),"已经全部阅读完了",flush=True)
             return biz
         elif response["result"]["status"] ==70:
             biz=""
-            print("下一轮还未开启",flush=True)
+            print(moshi_dayi(yd),"下一轮还未开启",flush=True)
             return biz
         elif response["result"]["status"] ==10:
             biz=''.join(re.findall('__biz=(.+)&mid',response["result"]["url"]))
@@ -166,7 +166,7 @@ def sj():
 def gg():
     url = requests.get('https://netcut.cn/p/fe616ac873f548ac')
     gg = ''.join(re.findall(r'"note_content":"(.*?)"',url.text)).replace("\\n", "\n").replace('\\/', '/')
-    print("当前版本4.6,靓仔自用同时运行版本")
+    print("当前版本4.8,靓仔自用同时运行版本")
     return gg
 def hh_sj(mid,un,token):
     headers = {
@@ -266,6 +266,7 @@ def zsyx(moshi,shuju):
                     xz_cishu=get_jieko(jk_url)
                     if xz_cishu>dq_cishu:
                         print("收到ok")
+                        time.sleep(random.randint(2, 8))
                         break
                     else:
                         print("还未收到",flush=True)
