@@ -1,6 +1,6 @@
 #!/bin/bash
-if wget -q --spider https://raw.fastgit.org/git4646/ziyon/main/elmtool.sh; then
-    wget -O elmtool.sh https://raw.fastgit.org/git4646/ziyon/main/elmtool.sh
+if wget -q --spider https://raw.githubusercontent.com/git4646/ziyon/main/elmtool.sh; then
+    wget -O elmtool.sh https://raw.githubusercontent.com/git4646/ziyon/main/elmtool.sh
     echo "更新成功"
     # 在这里添加下载文件后的其他操作
 else
