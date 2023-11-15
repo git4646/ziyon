@@ -11,7 +11,7 @@ import requests
 import re
 import time
 target_time = datetime.time(18, 0, 0)#定时时间
-P00001_values = ["2dUuuXfC6Ghm27V5wiAB2hVIrWc3r57m2bOk3vZQeQcnYo4Ts1bADc7T6QkofXeSZLm3W57"]  #账号存放区
+P00001_values = [""]  #账号存放区
 headers = {
         'accept': 'application/json',
         'user-agent': 'Mozilla/5.0 (Linux; Android 12; M2012K11C Build/SKQ1.211006.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/95.0.4638.74 Mobile Safari/537.36 IqiyiApp/iqiyi IqiyiVersion/14.5.5 IqiyiPlatform/2_22_222 QYStyleModel/(light)',
