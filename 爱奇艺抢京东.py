@@ -6,6 +6,7 @@
 抓包 爱奇艺ck 里的P00001值，变量名 P00001_ck ，多账号@分格
 cron 0 58 11,19 * * ?
 写得比较烂,将就用，有啥好玩推推
+2023-12-01 修复正则获取不到漫威包
 '''
 import datetime
 import concurrent.futures
@@ -40,15 +41,15 @@ def gg():
     response = requests.get(url, headers=headers).text
     print(response, flush=True)
     jd = ''.join(re.findall(r"京东:(.+)", response))
-    mw_bao = ''.join(re.findall(r"漫威包:(.+)", response))
+    mw_bao = ''.join(re.findall(r"漫威:(.+)", response))
     vr = ''.join(re.findall(r"VR:(.+)", response))  # 正则表达式模式，匹配"爱奇艺code:"后面的数字部分
     if jd != "" and qiang == 1:
         code.append(jd)
-        target_time = datetime.time(11, 59, 58)
+        target_time = datetime.time(11, 59, 59)
     elif vr != "":
         code.append(vr)
         code.append(mw_bao)
-        target_time = datetime.time(19, 59, 58)
+        target_time = datetime.time(19, 59, 59)
     return code
 
 
@@ -146,7 +147,7 @@ def perform_requests_threadpool(urls):
 while True:
     current_time = datetime.datetime.now().time()
     if current_time >= target_time:
-        sleep_ms(500)
+        sleep_ms(890)
         results = perform_requests_threadpool(urls)
         for result in results:
             if result:
