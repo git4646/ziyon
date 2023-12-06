@@ -3,9 +3,9 @@
 活动入口:https://vip.iqiyi.com/html5VIP/activity/seckillAggregationPage/index.html?actCode=b11a095903f712cd&rid=169865770323380&hideNav=1&fv=b3b9274a0eb0aafd
 本人想凑一些爱奇艺v5以上会员,每个月自动开红包内部助力,不用于盈利，如需要联系即可
 ====================================
-12点京东:a88507429c31e87c
-20点漫威:
-20点VR:
+12点京东:
+20点漫威:9b6aa81f0e2df986
+20点VR:a77baf86f29b7b3a
 ====================================
 爱奇艺新秒杀活动脚本
 https://raw.githubusercontent.com/git4646/ziyon/main/爱奇艺抢京东.py
